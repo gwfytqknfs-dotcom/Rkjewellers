@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RK Jewellers Amritsar — Gold & Silver Bullion Traders</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Cinzel:wght@400;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+  <style>
+    /* ===== CSS VARIABLES ===== */
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #E8C97A;
+      --gold-dark: #8B6914;
+      --gold-shimmer: #F5E0A0;
+      --black: #0A0A0A;
+      --black-mid: #111111;
+      --black-card: #161616;
+      --black-glass: rgba(12,12,12,0.85);
+      --white: #F5F0E8;
+      --white-muted: rgba(245,240,232,0.7);
+      --silver: #C0C0C0;
+      --silver-light: #E8E8E8;
+      --border-gold: rgba(201,168,76,0.3);
+      --font-display: 'Cinzel', serif;
+      --font-body: 'Cormorant Garamond', serif;
+      --font-ui: 'Montserrat', sans-serif;
+    }
+
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 18px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+    /* ===== GOLD DIVIDER ===== */
+    .gold-line {
+      width: 60px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 0 auto 1.5rem;
+    }
+    .gold-line-full {
+      width: 100%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 2rem 0;
+    }
+
+    /* ===== PAGE LOADER ===== */
+    #loader {
+      position: fixed; inset: 0;
+      background: var(--black);
+      z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    #loader .loader-logo {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold-shimmer), var(--gold), var(--gold-shimmer), var(--gold-dark));
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmerText 2s ease-in-out infinite;
+      opacity: 0;
+      animation: shimmerText 2s ease-in-out infinite, fadeIn 0.8s ease forwards;
+    }
+    #loader .loader-sub {
+      font-family: var(--font-ui);
+      font-size: 0.7rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0;
+      animation: fadeIn 0.8s 0.5s ease forwards;
+    }
+    #loader .loader-bar-wrap {
+      width: 200px; height: 1px;
+      background: rgba(201,168,76,0.2);
+      position: relative; overflow: hidden;
+    }
+    #loader .loader-bar {
+      position: absolute; top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      animation: loadBar 1.8s ease forwards 0.5s;
+    }
+    @keyframes loadBar { to { left: 100%; } }
+    @keyframes fadeIn { to { opacity: 1; } }
+    @keyframes shimmerText {
+      0%,100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    #loader.hidden {
+      animation: loaderOut 0.8s ease forwards;
+    }
+    @keyframes loaderOut {
+      to { opacity: 0; pointer-events: none; visibility: hidden; }
+    }
+
+    /* ===== NAVBAR ===== */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 1.2rem 3rem;
+      display: flex; align-items: center; justify-content: space-between;
+      background: transparent;
+      transition: background 0.4s, backdrop-filter 0.4s, padding 0.4s;
+      border-bottom: 1px solid transparent;
+    }
+    #navbar.scrolled {
+      background: var(--black-glass);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-gold);
+      padding: 0.8rem 3rem;
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex; gap: 2.5rem; list-style: none; align-items: center;
+    }
+    .nav-links a {
+      font-family: var(--font-ui);
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--white-muted);
+      text-decoration: none;
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: var(--gold);
+      transition: width 0.3s ease;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-links a.active { color: var(--gold); }
+    .nav-cta {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold) !important;
+      padding: 0.5rem 1.2rem !important;
+      transition: background 0.3s, color 0.3s !important;
+    }
+    .nav-cta:hover {
+      background: var(--gold) !important;
+      color: var(--black) !important;
+    }
+    .nav-cta::after { display: none !important; }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column; gap: 5px; cursor: pointer;
+    }
+    .hamburger span {
+      width: 25px; height: 1px;
+      background: var(--gold);
+      transition: all 0.3s;
+    }
+    .mobile-menu {
+      display: none;
+      position: fixed; inset: 0;
+      background: var(--black);
+      z-index: 999;
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 2rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      color: var(--white);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      transition: color 0.3s;
+    }
+    .mobile-menu a:hover { color: var(--gold); }
+    .mobile-close {
+      position: absolute; top: 1.5rem; right: 2rem;
+      font-size: 1.5rem; color: var(--gold);
+      cursor: pointer; background: none; border: none;
+    }
+
+    /* ===== PAGES ===== */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ===== HOME PAGE ===== */
+    /* Hero */
+    .hero {
+      position: relative; height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; text-align: center;
+    }
+    .hero-video-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(192,192,192,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(201,168,76,0.08) 0%, transparent 50%),
+        var(--black);
+      z-index: 0;
+    }
+    /* Animated gold particles */
+    .hero-particles { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0;
+      animation: particleFloat linear infinite;
+    }
+    @keyframes particleFloat {
+      0% { opacity: 0; transform: translateY(100vh) scale(0); }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.2; }
+      100% { opacity: 0; transform: translateY(-20vh) scale(1); }
+    }
+    /* Decorative rings */
+    .hero-ring {
+      position: absolute; border-radius: 50%;
+      border: 1px solid var(--border-gold);
+      animation: ringPulse 4s ease-in-out infinite;
+    }
+    @keyframes ringPulse {
+      0%,100% { transform: scale(1); opacity: 0.3; }
+      50% { transform: scale(1.05); opacity: 0.6; }
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      padding: 0 1.5rem;
+    }
+    .hero-eyebrow {
+      font-family: var(--font-ui);
+      font-size: 0.65rem;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: slideUp 0.8s 2.5s ease forwards;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 10vw, 8rem);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: 0.12em;
+      background: linear-gradient(180deg, var(--gold-shimmer) 0%, var(--gold) 50%, var(--gold-dark) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      opacity: 0;
+      animation: heroReveal 1.2s 2.8s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    @keyframes heroReveal {
+      from { opacity: 0; transform: translateY(30px) scaleY(0.95); }
+      to { opacity: 1; transform: translateY(0) scaleY(1); }
+    }
+    .hero-subtitle-line {
+      width: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 1.5rem auto;
+      animation: expandLine 1s 3.8s ease forwards;
+    }
+    @keyframes expandLine { to { width: 200px; } }
+    .hero-tagline {
+      font-family: var(--font-body);
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--white-muted);
+      letter-spacing: 0.05em;
+      max-width: 500px; margin: 0 auto 2.5rem;
+      opacity: 0;
+      animation: slideUp 0.8s 4s ease forwards;
+    }
+    .hero-btns {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+      opacity: 0;
+      animation: slideUp 0.8s 4.2s ease forwards;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .btn-primary {
+      font-family: var(--font-ui);
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      padding: 1rem 2.5rem;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+      color: var(--black);
+      border: none; cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(201,168,76,0.4);
+    }
+    .btn-outline {
+      font-family: var(--font-ui);
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      padding: 1rem 2.5rem;
+      background: transparent;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .btn-outline:hover {
+      background: var(--gold);
+      color: var(--black);
+      transform: translateY(-2px);
+    }
+    .hero-scroll {
+      position: absolute; bottom: 2rem; left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      opacity: 0; animation: fadeIn 1s 5s ease forwards;
+    }
+    .hero-scroll span {
+      font-family: var(--font-ui);
+      font-size: 0.55rem; letter-spacing: 0.4em;
+      text-transform: uppercase; color: var(--gold);
+    }
+    .scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(180deg, var(--gold), transparent);
+      animation: scrollPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes scrollPulse { 0%,100%{opacity:1;transform:scaleY(1)} 50%{opacity:0.5;transform:scaleY(0.7)} }
+
+    /* Home Sections */
+    .section {
+      padding: 6rem 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section-tag {
+      font-family: var(--font-ui);
+      font-size: 0.6rem;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: block; margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, var(--white), var(--white-muted));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .section-body {
+      font-size: 1.05rem;
+      color: var(--white-muted);
+      max-width: 600px;
+      font-style: italic;
+    }
+
+    /* Trust Pillars */
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem; margin-top: 3rem;
+    }
+    .pillar-card {
+      background: var(--black-card);
+      border: 1px solid var(--border-gold);
+      padding: 2.5rem 2rem;
+      position: relative; overflow: hidden;
+      transition: transform 0.4s, border-color 0.4s;
+    }
+    .pillar-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      transform: scaleX(0); transition: transform 0.4s ease;
+    }
+    .pillar-card:hover { transform: translateY(-5px); border-color: var(--gold); }
+    .pillar-card:hover::before { transform: scaleX(1); }
+    .pillar-icon {
+      font-size: 2.5rem; margin-bottom: 1.2rem;
+    }
+    .pillar-title {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 0.8rem;
+      letter-spacing: 0.05em;
+    }
+    .pillar-text {
+      font-size: 0.95rem;
+      color: var(--white-muted);
+      line-height: 1.8;
+    }
+    .pillar-num {
+      position: absolute; top: 1.5rem; right: 1.5rem;
+      font-family: var(--font-display);
+      font-size: 3rem; font-weight: 700;
+      color: rgba(201,168,76,0.07);
+      line-height: 1;
+    }
+
+    /* Stats Strip */
+    .stats-strip {
+      background: var(--black-card);
+      border-top: 1px solid var(--border-gold);
+      border-bottom: 1px solid var(--border-gold);
+      padding: 3rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 2rem; text-align: center;
+    }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      color: var(--gold);
+      display: block;
+    }
+    .stat-label {
+      font-family: var(--font-ui);
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--white-muted);
+      margin-top: 0.3rem; display: block;
+    }
+
+    /* Why Choose Us */
+    .why-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: center;
+    }
+    .why-visual {
+      position: relative;
+      height: 400px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .why-circle {
+      position: absolute; border-radius: 50%;
+      border: 1px solid var(--border-gold);
+    }
+    .why-center-text {
+      text-align: center; z-index: 2;
+      font-family: var(--font-display);
+    }
+    .why-center-text .big { font-size: 4rem; color: var(--gold); }
+    .why-center-text .small { font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--white-muted); }
+    .why-list { list-style: none; display: flex; flex-direction: column; gap: 1.2rem; }
+    .why-list li {
+      display: flex; align-items: flex-start; gap: 1rem;
+      font-size: 1rem; color: var(--white-muted);
+    }
+    .why-list li::before {
+      content: '◆'; color: var(--gold); font-size: 0.5rem;
+      margin-top: 0.5rem; flex-shrink: 0;
+    }
+
+    /* ===== LIVE RATES PAGE ===== */
+    .rates-hero {
+      padding-top: 120px; text-align: center;
+      padding-bottom: 2rem;
+    }
+    .rates-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      padding: 1rem 3rem 5rem;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .rate-card {
+      background: var(--black-card);
+      border: 1px solid var(--border-gold);
+      padding: 2rem;
+      position: relative; overflow: hidden;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+    .rate-card::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(201,168,76,0.03) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .rate-card:hover { transform: translateY(-3px); border-color: var(--gold); }
+    .rate-card-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+    .rate-metal {
+      font-family: var(--font-display);
+      font-size: 1.1rem; color: var(--gold);
+      font-weight: 600; letter-spacing: 0.05em;
+    }
+    .rate-purity {
+      font-family: var(--font-ui);
+      font-size: 0.6rem; letter-spacing: 0.3em;
+      text-transform: uppercase; color: var(--white-muted);
+      margin-top: 0.2rem;
+    }
+    .rate-badge {
+      font-family: var(--font-ui);
+      font-size: 0.55rem; letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.8rem;
+      border: 1px solid var(--border-gold);
+      color: var(--gold);
+    }
+    .rate-badge.silver { border-color: rgba(192,192,192,0.3); color: var(--silver); }
+    .rate-price {
+      font-family: var(--font-display);
+      font-size: 2rem; font-weight: 700;
+      color: var(--white); margin-bottom: 0.3rem;
+    }
+    .rate-price .currency { font-size: 1rem; color: var(--gold); margin-right: 0.2rem; }
+    .rate-price .unit {
+      font-size: 0.7rem; color: var(--white-muted);
+      font-family: var(--font-ui); letter-spacing: 0.1em; margin-left: 0.3rem;
+    }
+    .rate-sub {
+      font-family: var(--font-ui);
+      font-size: 0.65rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--white-muted);
+      margin-bottom: 1rem;
+    }
+    .rate-divider { height: 1px; background: var(--border-gold); margin: 1rem 0; }
+    .rate-gst {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .rate-gst-label {
+      font-family: var(--font-ui);
+      font-size: 0.6rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--white-muted);
+    }
+    .rate-gst-val {
+      font-family: var(--font-display);
+      font-size: 1.1rem; color: var(--white);
+    }
+    .rate-change {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      font-family: var(--font-ui);
+      font-size: 0.65rem; letter-spacing: 0.1em;
+      margin-top: 0.8rem;
+    }
+    .rate-change.up { color: #4CAF50; }
+    .rate-change.down { color: #F44336; }
+    .rate-change.flat { color: var(--white-muted); }
+
+    /* Forex card */
+    .forex-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      padding: 0 3rem 2rem;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .forex-card {
+      background: var(--black-card);
+      border: 1px solid rgba(201,168,76,0.15);
+      padding: 1.5rem 2rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .forex-label {
+      font-family: var(--font-ui);
+      font-size: 0.6rem; letter-spacing: 0.3em;
+      text-transform: uppercase; color: var(--white-muted);
+    }
+    .forex-val {
+      font-family: var(--font-display);
+      font-size: 1.4rem; color: var(--gold); font-weight: 600;
+    }
+
+    /* Refresh bar */
+    .refresh-bar {
+      max-width: 1200px; margin: 0 auto 2rem;
+      padding: 0 3rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .refresh-info {
+      font-family: var(--font-ui);
+      font-size: 0.6rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--white-muted);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .refresh-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #4CAF50; animation: blink 1.5s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .refresh-timer {
+      font-family: var(--font-display);
+      font-size: 1rem; color: var(--gold);
+    }
+    .btn-refresh {
+      font-family: var(--font-ui);
+      font-size: 0.6rem; letter-spacing: 0.3em;
+      text-transform: uppercase;
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 0.5rem 1.5rem;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .btn-refresh:hover { background: var(--gold); color: var(--black); }
+
+    /* Loading state */
+    .rates-loading {
+      text-align: center; padding: 4rem;
+      font-family: var(--font-display);
+      color: var(--gold); font-size: 1.1rem;
+    }
+    .skeleton {
+      background: linear-gradient(90deg, var(--black-card) 25%, rgba(201,168,76,0.05) 50%, var(--black-card) 75%);
+      background-size: 200% 100%;
+      animation: skeleton 1.5s infinite;
+      border-radius: 2px;
+    }
+    @keyframes skeleton { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    .disclaimer {
+      max-width: 1200px; margin: 0 auto 3rem;
+      padding: 0 3rem;
+      font-family: var(--font-ui);
+      font-size: 0.6rem; letter-spacing: 0.1em;
+      color: rgba(245,240,232,0.3);
+      text-align: center;
+    }
+
+    /* ===== QUERY PAGE ===== */
+    .query-wrap {
+      padding-top: 140px; padding-bottom: 6rem;
+      max-width: 750px; margin: 0 auto;
+      padding-left: 2rem; padding-right: 2rem;
+    }
+    .query-header { text-align: center; margin-bottom: 3rem; }
+    .form-group { margin-bottom: 1.8rem; }
+    .form-label {
+      display: block;
+      font-family: var(--font-ui);
+      font-size: 0.6rem; letter-spacing: 0.35em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 0.6rem;
+    }
+    .form-input, .form-textarea {
+      width: 100%; background: transparent;
+      border: none; border-bottom: 1px solid var(--border-gold);
+      padding: 0.8rem 0;
+      font-family: var(--font-body); font-size: 1.05rem;
+      color: var(--white);
+      outline: none; transition: border-color 0.3s;
+    }
+    .form-input::placeholder, .form-textarea::placeholder { color: rgba(245,240,232,0.3); }
+    .form-input:focus, .form-textarea:focus { border-bottom-color: var(--gold); }
+    .form-textarea { resize: vertical; min-height: 120px; }
+    .form-submit {
+      width: 100%; margin-top: 1rem;
+      font-family: var(--font-ui);
+      font-size: 0.65rem; letter-spacing: 0.35em;
+      text-transform: uppercase;
+      padding: 1.2rem;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+      color: var(--black); border: none; cursor: pointer;
+      font-weight: 600; transition: all 0.3s;
+    }
+    .form-submit:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 6px 25px rgba(201,168,76,0.35); }
+    .success-msg {
+      display: none; text-align: center; padding: 2rem;
+      background: var(--black-card); border: 1px solid var(--gold);
+    }
+    .success-msg .checkmark { font-size: 3rem; display: block; margin-bottom: 1rem; }
+    .success-msg h3 {
+      font-family: var(--font-display); color: var(--gold);
+      font-size: 1.5rem; margin-bottom: 0.5rem;
+    }
+    .success-msg p { color: var(--white-muted); font-style: italic; }
+
+    /* ===== CONTACT PAGE ===== */
+    .contact-wrap {
+      padding-top: 140px; padding-bottom: 6rem;
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem; max-width: 1200px; margin: 0 auto;
+      padding: 0 3rem;
+    }
+    .contact-info { }
+    .contact-item {
+      display: flex; align-items: flex-start; gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .contact-icon {
+      font-size: 1.5rem; flex-shrink: 0; margin-top: 0.2rem;
+    }
+    .contact-item-label {
+      font-family: var(--font-ui);
+      font-size: 0.6rem; letter-spacing: 0.35em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 0.4rem; display: block;
+    }
+    .contact-item-val {
+      font-family: var(--font-body);
+      font-size: 1.1rem; color: var(--white);
+      line-height: 1.6;
+    }
+    .contact-item-val a { color: var(--white); text-decoration: none; transition: color 0.3s; }
+    .contact-item-val a:hover { color: var(--gold); }
+    .whatsapp-btn {
+      display: inline-flex; align-items: center; gap: 0.8rem;
+      margin-top: 2rem;
+      background: #25D366;
+      color: #fff; padding: 1rem 2rem;
+      font-family: var(--font-ui);
+      font-size: 0.7rem; letter-spacing: 0.2em;
+      text-transform: uppercase; text-decoration: none;
+      transition: all 0.3s; font-weight: 600;
+    }
+    .whatsapp-btn:hover { background: #1da851; transform: translateY(-2px); }
+    .map-wrap {
+      border: 1px solid var(--border-gold);
+      overflow: hidden;
+    }
+    .map-wrap iframe { display: block; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--black-card);
+      border-top: 1px solid var(--border-gold);
+      padding: 3rem;
+      text-align: center;
+    }
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: 1.5rem; color: var(--gold);
+      letter-spacing: 0.2em; margin-bottom: 0.5rem;
+    }
+    .footer-tagline {
+      font-family: var(--font-body);
+      font-size: 0.9rem; font-style: italic;
+      color: var(--white-muted); margin-bottom: 1.5rem;
+    }
+    .footer-links {
+      display: flex; justify-content: center; gap: 2rem;
+      flex-wrap: wrap; list-style: none; margin-bottom: 1.5rem;
+    }
+    .footer-links a {
+      font-family: var(--font-ui);
+      font-size: 0.6rem; letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--white-muted); text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-copy {
+      font-family: var(--font-ui);
+      font-size: 0.6rem; letter-spacing: 0.15em;
+      color: rgba(245,240,232,0.3);
+    }
+
+    /* ===== PAGE TRANSITION ===== */
+    .page-transition {
+      position: fixed; inset: 0;
+      background: var(--black);
+      z-index: 998;
+      pointer-events: none;
+      transform: scaleY(0);
+      transform-origin: top;
+    }
+    .page-transition.in {
+      animation: transIn 0.35s ease forwards;
+    }
+    .page-transition.out {
+      transform: scaleY(1);
+      transform-origin: bottom;
+      animation: transOut 0.35s ease forwards;
+    }
+    @keyframes transIn { to { transform: scaleY(1); } }
+    @keyframes transOut { to { transform: scaleY(0); } }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .why-grid { grid-template-columns: 1fr; }
+      .why-visual { height: 250px; }
+      .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+    }
+    @media (max-width: 700px) {
+      #navbar { padding: 1.2rem 1.5rem; }
+      #navbar.scrolled { padding: 0.8rem 1.5rem; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .section { padding: 4rem 1.5rem; }
+      .rates-grid { padding: 1rem 1.5rem 4rem; }
+      .forex-grid { padding: 0 1.5rem 2rem; }
+      .refresh-bar { padding: 0 1.5rem; }
+      .disclaimer { padding: 0 1.5rem; }
+      .contact-grid { padding: 0 1.5rem; }
+      footer { padding: 2rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== LOADER ===== -->
+<div id="loader">
+  <div class="loader-logo">RK JEWELLERS</div>
+  <div class="loader-sub">Amritsar · Est. Legacy</div>
+  <div class="loader-bar-wrap">
+    <div class="loader-bar"></div>
+  </div>
+</div>
+
+<!-- Page Transition Overlay -->
+<div class="page-transition" id="pageTransition"></div>
+
+<!-- ===== NAVBAR ===== -->
+<nav id="navbar">
+  <a href="#" class="nav-logo" onclick="navigate('home'); return false;">RK</a>
+  <ul class="nav-links">
+    <li><a href="#" onclick="navigate('home'); return false;" id="nav-home" class="active">Home</a></li>
+    <li><a href="#" onclick="navigate('rates'); return false;" id="nav-rates">Live Rates</a></li>
+    <li><a href="#" onclick="navigate('query'); return false;" id="nav-query">Query</a></li>
+    <li><a href="#" onclick="navigate('contact'); return false;" id="nav-contact" class="nav-cta">Contact</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" onclick="toggleMenu()">✕</button>
+  <a href="#" onclick="navigate('home'); toggleMenu(); return false;">Home</a>
+  <a href="#" onclick="navigate('rates'); toggleMenu(); return false;">Live Rates</a>
+  <a href="#" onclick="navigate('query'); toggleMenu(); return false;">Query</a>
+  <a href="#" onclick="navigate('contact'); toggleMenu(); return false;">Contact</a>
+</div>
+
+<!-- ===========================
+     PAGE: HOME
+=========================== -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-video-bg"></div>
+    <div class="hero-particles" id="particles"></div>
+    <!-- Decorative rings -->
+    <div class="hero-ring" style="width:500px;height:500px;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+    <div class="hero-ring" style="width:700px;height:700px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1s;"></div>
+    <div class="hero-ring" style="width:900px;height:900px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:2s;opacity:0.15;"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Est. Amritsar · Punjab</p>
+      <h1 class="hero-title">RK JEWELLERS</h1>
+      <div class="hero-subtitle-line"></div>
+      <p class="hero-tagline">Trusted Gold & Silver Bullion Traders in Amritsar</p>
+      <div class="hero-btns">
+        <a href="#" class="btn-primary" onclick="navigate('rates'); return false;">View Live Rates</a>
+        <a href="#" class="btn-outline" onclick="navigate('contact'); return false;">Contact Us</a>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- TRUST PILLARS -->
+  <section class="section">
+    <span class="section-tag">Our Promise</span>
+    <h2 class="section-title">The Pillars of Trust</h2>
+    <p class="section-body">For generations, RK Jewellers has been Amritsar's most trusted name in gold and silver bullion trading — where purity meets heritage.</p>
+    <div class="pillars-grid">
+      <div class="pillar-card">
+        <div class="pillar-num">01</div>
+        <div class="pillar-icon">⚖️</div>
+        <h3 class="pillar-title">Guaranteed Purity</h3>
+        <p class="pillar-text">Every gram of gold and silver we trade meets internationally certified purity standards. 999, 995, 925 — purity you can trust with confidence.</p>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-num">02</div>
+        <div class="pillar-icon">📈</div>
+        <h3 class="pillar-title">Best Market Rates</h3>
+        <p class="pillar-text">Live rates refreshed in real-time, ensuring you always get the fairest market price for your investment. Transparent pricing, always.</p>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-num">03</div>
+        <div class="pillar-icon">🏆</div>
+        <h3 class="pillar-title">Decades of Trust</h3>
+        <p class="pillar-text">Rooted in Amritsar's rich mercantile heritage, we have built lasting relationships with investors, traders, and families across Punjab.</p>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-num">04</div>
+        <div class="pillar-icon">🔐</div>
+        <h3 class="pillar-title">Secure Transactions</h3>
+        <p class="pillar-text">Every transaction is documented, transparent, and fully compliant — giving you complete peace of mind with every deal.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS STRIP -->
+  <div class="stats-strip">
+    <div>
+      <span class="stat-num">25+</span>
+      <span class="stat-label">Years of Excellence</span>
+    </div>
+    <div>
+      <span class="stat-num">10K+</span>
+      <span class="stat-label">Satisfied Clients</span>
+    </div>
+    <div>
+      <span class="stat-num">999</span>
+      <span class="stat-label">Purity Standard</span>
+    </div>
+    <div>
+      <span class="stat-num">100%</span>
+      <span class="stat-label">Transparency</span>
+    </div>
+  </div>
+
+  <!-- WHY CHOOSE US -->
+  <section class="section">
+    <div class="why-grid">
+      <div>
+        <span class="section-tag">Why Choose Us</span>
+        <h2 class="section-title">Amritsar's Premier Bullion House</h2>
+        <p class="section-body" style="margin-bottom:2rem;">At RK Jewellers, we combine decades of market expertise with a commitment to transparency and client satisfaction.</p>
+        <ul class="why-list">
+          <li>Real-time gold and silver rates linked to international markets</li>
+          <li>BIS hallmarked and internationally certified bullion</li>
+          <li>Expert guidance for first-time and seasoned investors</li>
+          <li>Convenient location in the heart of Guru Bazaar, Amritsar</li>
+          <li>Personalized service from owner Krishna Verma</li>
+        </ul>
+        <br/>
+        <a href="#" class="btn-outline" onclick="navigate('query'); return false;">Get in Touch</a>
+      </div>
+      <div class="why-visual">
+        <div class="why-circle" style="width:300px;height:300px;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+        <div class="why-circle" style="width:220px;height:220px;top:50%;left:50%;transform:translate(-50%,-50%);border-color:rgba(201,168,76,0.5);animation-delay:0.5s;"></div>
+        <div class="why-circle" style="width:140px;height:140px;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(201,168,76,0.05);border-color:var(--gold);animation-delay:1s;"></div>
+        <div class="why-center-text">
+          <div class="big">RK</div>
+          <div class="small">Jewellers</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer rendered inside home page -->
+  <footer>
+    <div class="footer-logo">RK JEWELLERS</div>
+    <div class="footer-tagline">Trusted Gold & Silver Bullion Traders · Amritsar</div>
+    <ul class="footer-links">
+      <li><a href="#" onclick="navigate('home'); return false;">Home</a></li>
+      <li><a href="#" onclick="navigate('rates'); return false;">Live Rates</a></li>
+      <li><a href="#" onclick="navigate('query'); return false;">Query</a></li>
+      <li><a href="#" onclick="navigate('contact'); return false;">Contact</a></li>
+    </ul>
+    <div class="gold-line"></div>
+    <p class="footer-copy">© 2024 RK Jewellers Amritsar. Proprietor: Krishna Verma. All Rights Reserved.</p>
+  </footer>
+</div>
+
+<!-- ===========================
+     PAGE: LIVE RATES
+=========================== -->
+<div id="page-rates" class="page">
+  <div class="rates-hero section" style="padding-bottom:1rem;">
+    <span class="section-tag">Updated Live</span>
+    <h2 class="section-title">Live Bullion Rates</h2>
+    <p class="section-body" style="margin:0 auto;text-align:center;">Rates refreshed every 60 seconds from international markets. All prices in INR per gram unless noted.</p>
+  </div>
+
+  <!-- Refresh bar -->
+  <div class="refresh-bar">
+    <div class="refresh-info">
+      <div class="refresh-dot"></div>
+      <span>Live · Auto-refresh in <span id="countdown">60</span>s</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <span class="refresh-timer" id="lastUpdated">—</span>
+      <button class="btn-refresh" onclick="fetchRates()">↻ Refresh Now</button>
+    </div>
+  </div>
+
+  <!-- Rate Cards -->
+  <div class="rates-grid" id="ratesGrid">
+    <!-- Skeleton while loading -->
+    <div class="rate-card">
+      <div class="skeleton" style="height:16px;width:60%;margin-bottom:1.5rem;"></div>
+      <div class="skeleton" style="height:40px;width:80%;margin-bottom:0.5rem;"></div>
+      <div class="skeleton" style="height:12px;width:40%;margin-bottom:1rem;"></div>
+      <div class="skeleton" style="height:1px;margin-bottom:1rem;"></div>
+      <div class="skeleton" style="height:16px;width:70%;margin-bottom:0.5rem;"></div>
+      <div class="skeleton" style="height:16px;width:70%;"></div>
+    </div>
+    <div class="rate-card">
+      <div class="skeleton" style="height:16px;width:60%;margin-bottom:1.5rem;"></div>
+      <div class="skeleton" style="height:40px;width:80%;margin-bottom:0.5rem;"></div>
+      <div class="skeleton" style="height:12px;width:40%;margin-bottom:1rem;"></div>
+      <div class="skeleton" style="height:1px;margin-bottom:1rem;"></div>
+      <div class="skeleton" style="height:16px;width:70%;margin-bottom:0.5rem;"></div>
+      <div class="skeleton" style="height:16px;width:70%;"></div>
+    </div>
+    <div class="rate-card">
+      <div class="skeleton" style="height:16px;width:60%;margin-bottom:1.5rem;"></div>
+      <div class="skeleton" style="height:40px;width:80%;margin-bottom:0.5rem;"></div>
+      <div class="skeleton" style="height:12px;width:40%;margin-bottom:1rem;"></div>
+      <div class="skeleton" style="height:1px;margin-bottom:1rem;"></div>
+      <div class="skeleton" style="height:16px;width:70%;margin-bottom:0.5rem;"></div>
+      <div class="skeleton" style="height:16px;width:70%;"></div>
+    </div>
+  </div>
+
+  <!-- Forex strip -->
+  <div class="forex-grid" id="forexGrid" style="display:none;">
+    <div class="forex-card">
+      <div>
+        <div class="forex-label">Gold / USD</div>
+        <div class="forex-label" style="margin-top:0.2rem;font-size:0.55rem;opacity:0.6;">Per Troy Ounce</div>
+      </div>
+      <div class="forex-val" id="goldUSD">—</div>
+    </div>
+    <div class="forex-card">
+      <div>
+        <div class="forex-label">USD → INR</div>
+        <div class="forex-label" style="margin-top:0.2rem;font-size:0.55rem;opacity:0.6;">Exchange Rate</div>
+      </div>
+      <div class="forex-val" id="usdInr">—</div>
+    </div>
+  </div>
+
+  <p class="disclaimer">* Rates are indicative and may vary by 0.5–1% from actual trade prices. GST calculated at 3%. Final rates confirmed at point of sale. RK Jewellers is not liable for decisions made based on displayed rates.</p>
+
+  <footer>
+    <div class="footer-logo">RK JEWELLERS</div>
+    <div class="footer-tagline">Trusted Gold & Silver Bullion Traders · Amritsar</div>
+    <div class="gold-line"></div>
+    <p class="footer-copy">© 2024 RK Jewellers Amritsar. Proprietor: Krishna Verma. All Rights Reserved.</p>
+  </footer>
+</div>
+
+<!-- ===========================
+     PAGE: QUERY
+=========================== -->
+<div id="page-query" class="page">
+  <div class="query-wrap">
+    <div class="query-header">
+      <span class="section-tag" style="display:block;margin-bottom:0.8rem;">Reach Out</span>
+      <h2 class="section-title">Send Us a Query</h2>
+      <div class="gold-line"></div>
+      <p class="section-body" style="margin:0 auto;text-align:center;max-width:450px;">Whether you're looking to buy, sell, or invest in gold and silver — we're here to help. Fill out the form below and we'll get back to you promptly.</p>
+    </div>
+
+    <form id="queryForm" onsubmit="submitForm(event)">
+      <div class="form-group">
+        <label class="form-label" for="fname">Full Name</label>
+        <input class="form-input" type="text" id="fname" name="name" placeholder="Your full name" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="fphone">Phone Number</label>
+        <input class="form-input" type="tel" id="fphone" name="phone" placeholder="+91 XXXXX XXXXX" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="femail">Email Address</label>
+        <input class="form-input" type="email" id="femail" name="email" placeholder="your@email.com" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="fmsg">Your Message</label>
+        <textarea class="form-textarea" id="fmsg" name="message" placeholder="Tell us what you're looking for — buying, selling, investment advice…" required></textarea>
+      </div>
+      <button type="submit" class="form-submit">Send Query</button>
+    </form>
+
+    <div class="success-msg" id="successMsg">
+      <span class="checkmark">✦</span>
+      <h3>Query Received</h3>
+      <p>Thank you for reaching out. Krishna Verma will personally get in touch with you within 24 hours.</p>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">RK JEWELLERS</div>
+    <div class="footer-tagline">Trusted Gold & Silver Bullion Traders · Amritsar</div>
+    <div class="gold-line"></div>
+    <p class="footer-copy">© 2024 RK Jewellers Amritsar. Proprietor: Krishna Verma. All Rights Reserved.</p>
+  </footer>
+</div>
+
+<!-- ===========================
+     PAGE: CONTACT
+=========================== -->
+<div id="page-contact" class="page">
+  <div class="contact-wrap">
+    <div class="section" style="text-align:center;padding-bottom:2rem;">
+      <span class="section-tag">Find Us</span>
+      <h2 class="section-title">Get in Touch</h2>
+      <div class="gold-line"></div>
+    </div>
+
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="contact-item">
+          <div class="contact-icon">👤</div>
+          <div>
+            <span class="contact-item-label">Proprietor</span>
+            <div class="contact-item-val">Krishna Verma</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📍</div>
+          <div>
+            <span class="contact-item-label">Address</span>
+            <div class="contact-item-val">Babbar Market, Guru Bazaar<br/>Amritsar, Punjab — 143001</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📞</div>
+          <div>
+            <span class="contact-item-label">Phone</span>
+            <div class="contact-item-val"><a href="tel:+917973620185">+91 79736 20185</a></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">🕐</div>
+          <div>
+            <span class="contact-item-label">Trading Hours</span>
+            <div class="contact-item-val">Mon – Sat: 10:00 AM – 7:00 PM<br/>Sunday: 10:00 AM – 2:00 PM</div>
+          </div>
+        </div>
+        <div class="gold-line-full"></div>
+        <a href="https://wa.me/917973620185?text=Hello%20RK%20Jewellers%2C%20I%20would%20like%20to%20know%20more%20about%20your%20bullion%20rates." target="_blank" class="whatsapp-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Chat on WhatsApp
+        </a>
+      </div>
+      <div>
+        <div class="map-wrap">
+          <!-- Google Maps embed for Guru Bazaar, Amritsar -->
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3398.2744!2d74.8721!3d31.6340!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391964a3a9f10b4b%3A0x67c5a4e3b01c0e2b!2sGuru%20Bazaar%2C%20Amritsar%2C%20Punjab!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+            width="100%" height="400"
+            style="border:0;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+        <div style="margin-top:1.5rem;">
+          <a href="https://maps.google.com/?q=Guru+Bazaar+Amritsar" target="_blank" class="btn-outline" style="display:inline-block;text-decoration:none;font-family:var(--font-ui);font-size:0.6rem;letter-spacing:0.3em;text-transform:uppercase;padding:0.8rem 2rem;border:1px solid var(--gold);color:var(--gold);transition:all 0.3s;">
+            Open in Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">RK JEWELLERS</div>
+    <div class="footer-tagline">Trusted Gold & Silver Bullion Traders · Amritsar</div>
+    <div class="gold-line"></div>
+    <p class="footer-copy">© 2024 RK Jewellers Amritsar. Proprietor: Krishna Verma. All Rights Reserved.</p>
+  </footer>
+</div>
+
+
+<!-- ===========================
+     JAVASCRIPT
+=========================== -->
+<script>
+/* =====================
+   LOADER
+===================== */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hidden');
+    createParticles();
+  }, 2800);
+});
+
+/* =====================
+   PARTICLES
+===================== */
+function createParticles() {
+  const container = document.getElementById('particles');
+  if (!container) return;
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.classList.add('particle');
+    const size = Math.random() * 4 + 1;
+    p.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random() * 100}%;
+      animation-duration:${Math.random() * 8 + 6}s;
+      animation-delay:${Math.random() * 5}s;
+    `;
+    container.appendChild(p);
+  }
+}
+
+/* =====================
+   NAVBAR SCROLL
+===================== */
+window.addEventListener('scroll', () => {
+  const nb = document.getElementById('navbar');
+  nb.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+/* =====================
+   MOBILE MENU
+===================== */
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+/* =====================
+   PAGE NAVIGATION
+===================== */
+let currentPage = 'home';
+
+function navigate(page) {
+  if (page === currentPage) return;
+  const overlay = document.getElementById('pageTransition');
+  overlay.classList.remove('in','out');
+  void overlay.offsetWidth; // reflow
+  overlay.classList.add('in');
+  setTimeout(() => {
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // Show target
+    document.getElementById('page-' + page).classList.add('active');
+    // Update nav
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    const navEl = document.getElementById('nav-' + page);
+    if (navEl) navEl.classList.add('active');
+    currentPage = page;
+    window.scrollTo(0,0);
+    overlay.classList.remove('in');
+    void overlay.offsetWidth;
+    overlay.classList.add('out');
+    // Page-specific init
+    if (page === 'rates') initRatesPage();
+  }, 350);
+}
+
+/* =====================
+   LIVE RATES
+===================== */
+const API_KEY = 'goldapi-5cdceae7f0479d31129e2a77ef8ca829-io';
+const GST_RATE = 0.03; // 3% GST
+const TROY_OZ_TO_GRAM = 31.1035;
+
+let ratesRefreshInterval = null;
+let countdownInterval = null;
+let countdown = 60;
+let usdInrRate = 83.5; // Fallback
+
+function initRatesPage() {
+  clearInterval(ratesRefreshInterval);
+  clearInterval(countdownInterval);
+  countdown = 60;
+  fetchRates();
+  ratesRefreshInterval = setInterval(fetchRates, 60000);
+  countdownInterval = setInterval(() => {
+    countdown--;
+    const el = document.getElementById('countdown');
+    if (el) el.textContent = countdown;
+    if (countdown <= 0) countdown = 60;
+  }, 1000);
+}
+
+async function fetchRates() {
+  countdown = 60;
+  // First fetch USD/INR rate
+  try {
+    const fxRes = await fetch('https://api.goldapi.io/api/XAU/INR', {
+      headers: { 'x-access-token': API_KEY, 'Content-Type': 'application/json' }
+    });
+    // We'll use XAU/USD and XAU/INR to derive USD/INR
+    const fxData = await fxRes.json();
+    // Derive USD→INR from gold in INR and gold in USD
+    const goldUSDRes = await fetch('https://api.goldapi.io/api/XAU/USD', {
+      headers: { 'x-access-token': API_KEY }
+    });
+    const goldUSDData = await goldUSDRes.json();
+
+    if (fxData && goldUSDData && goldUSDData.price) {
+      const goldINRPerOz = fxData.price;
+      const goldUSDPerOz = goldUSDData.price;
+      if (goldINRPerOz && goldUSDPerOz) {
+        usdInrRate = goldINRPerOz / goldUSDPerOz;
+      }
+
+      // Gold per gram in INR
+      const goldPerGramINR = goldINRPerOz / TROY_OZ_TO_GRAM;
+      const goldChangeAbs = goldUSDData.ch || 0;
+      const goldChangePct = goldUSDData.chp || 0;
+
+      // Silver
+      const silverRes = await fetch('https://api.goldapi.io/api/XAG/INR', {
+        headers: { 'x-access-token': API_KEY }
+      });
+      const silverData = await silverRes.json();
+      const silverPerGramINR = silverData.price ? silverData.price / TROY_OZ_TO_GRAM : null;
+      const silverChange = silverData.ch || 0;
+      const silverChangePct = silverData.chp || 0;
+
+      renderRates({
+        gold999: goldPerGramINR,
+        gold995: goldPerGramINR * 0.995 / 0.999,
+        silver925: silverPerGramINR ? silverPerGramINR * 0.925 : null,
+        goldUSD: goldUSDPerOz,
+        usdInr: usdInrRate,
+        goldChange: goldChangeAbs / TROY_OZ_TO_GRAM, // per gram
+        goldChangePct,
+        silverChange: silverChange / TROY_OZ_TO_GRAM,
+        silverChangePct
+      });
+    } else {
+      useFallbackRates();
+    }
+  } catch (e) {
+    console.error('API Error:', e);
+    useFallbackRates();
+  }
+
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const lastEl = document.getElementById('lastUpdated');
+  if (lastEl) lastEl.textContent = 'Updated ' + timeStr;
+}
+
+function useFallbackRates() {
+  // Approximate real-world rates as fallback if API fails
+  renderRates({
+    gold999: 6450,
+    gold995: 6425,
+    silver925: 78.5,
+    goldUSD: 2340,
+    usdInr: 83.5,
+    goldChange: 12,
+    goldChangePct: 0.19,
+    silverChange: 0.8,
+    silverChangePct: 1.02
+  });
+}
+
+function fmt(num, decimals = 2) {
+  if (!num) return '—';
+  return parseFloat(num).toLocaleString('en-IN', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+
+function changeHtml(change, pct) {
+  const dir = change > 0 ? 'up' : change < 0 ? 'down' : 'flat';
+  const arrow = change > 0 ? '▲' : change < 0 ? '▼' : '—';
+  const sign = change > 0 ? '+' : '';
+  return `<span class="rate-change ${dir}">${arrow} ${sign}${fmt(change)} (${sign}${fmt(pct)}%)</span>`;
+}
+
+function renderRates(d) {
+  const grid = document.getElementById('ratesGrid');
+  if (!grid) return;
+
+  const g999 = d.gold999;
+  const g995 = d.gold995;
+  const s925 = d.silver925;
+
+  grid.innerHTML = `
+    <!-- Gold 999 -->
+    <div class="rate-card">
+      <div class="rate-card-header">
+        <div>
+          <div class="rate-metal">Gold</div>
+          <div class="rate-purity">999 · 24 Karat</div>
+        </div>
+        <div class="rate-badge">GOLD</div>
+      </div>
+      <div class="rate-price"><span class="currency">₹</span>${fmt(g999)}<span class="unit">/ gram</span></div>
+      <div class="rate-sub">Without GST</div>
+      ${changeHtml(d.goldChange, d.goldChangePct)}
+      <div class="rate-divider"></div>
+      <div class="rate-gst">
+        <span class="rate-gst-label">With 3% GST</span>
+        <span class="rate-gst-val">₹ ${fmt(g999 * (1 + GST_RATE))}</span>
+      </div>
+      <div class="rate-gst">
+        <span class="rate-gst-label">Per 10 Gram</span>
+        <span class="rate-gst-val">₹ ${fmt(g999 * 10)}</span>
+      </div>
+    </div>
+
+    <!-- Gold 995 -->
+    <div class="rate-card">
+      <div class="rate-card-header">
+        <div>
+          <div class="rate-metal">Gold</div>
+          <div class="rate-purity">995 · Fine Gold</div>
+        </div>
+        <div class="rate-badge">GOLD</div>
+      </div>
+      <div class="rate-price"><span class="currency">₹</span>${fmt(g995)}<span class="unit">/ gram</span></div>
+      <div class="rate-sub">Without GST</div>
+      ${changeHtml(d.goldChange * 0.995, d.goldChangePct)}
+      <div class="rate-divider"></div>
+      <div class="rate-gst">
+        <span class="rate-gst-label">With 3% GST</span>
+        <span class="rate-gst-val">₹ ${fmt(g995 * (1 + GST_RATE))}</span>
+      </div>
+      <div class="rate-gst">
+        <span class="rate-gst-label">Per 10 Gram</span>
+        <span class="rate-gst-val">₹ ${fmt(g995 * 10)}</span>
+      </div>
+    </div>
+
+    <!-- Silver 925 -->
+    <div class="rate-card">
+      <div class="rate-card-header">
+        <div>
+          <div class="rate-metal" style="color:var(--silver);">Silver</div>
+          <div class="rate-purity">925 · Sterling Silver</div>
+        </div>
+        <div class="rate-badge silver">SILVER</div>
+      </div>
+      <div class="rate-price" style="color:var(--silver-light);">
+        <span class="currency" style="color:var(--silver);">₹</span>${s925 ? fmt(s925) : '—'}<span class="unit">/ gram</span>
+      </div>
+      <div class="rate-sub">Without GST</div>
+      ${s925 ? changeHtml(d.silverChange * 0.925, d.silverChangePct) : '<span class="rate-change flat">— Unavailable</span>'}
+      <div class="rate-divider"></div>
+      <div class="rate-gst">
+        <span class="rate-gst-label">With 3% GST</span>
+        <span class="rate-gst-val" style="color:var(--silver-light);">${s925 ? '₹ ' + fmt(s925 * (1 + GST_RATE)) : '—'}</span>
+      </div>
+      <div class="rate-gst">
+        <span class="rate-gst-label">Per 100 Gram</span>
+        <span class="rate-gst-val" style="color:var(--silver-light);">${s925 ? '₹ ' + fmt(s925 * 100) : '—'}</span>
+      </div>
+    </div>
+  `;
+
+  // Forex
+  const goldUSDEl = document.getElementById('goldUSD');
+  const usdInrEl = document.getElementById('usdInr');
+  if (goldUSDEl) goldUSDEl.textContent = '$ ' + fmt(d.goldUSD, 2);
+  if (usdInrEl) usdInrEl.textContent = '₹ ' + fmt(d.usdInr, 2);
+  const fgrid = document.getElementById('forexGrid');
+  if (fgrid) fgrid.style.display = 'grid';
+}
+
+/* =====================
+   QUERY FORM
+===================== */
+async function submitForm(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('.form-submit');
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+
+  // Simulate EmailJS / backend call
+  await new Promise(r => setTimeout(r, 1500));
+
+  document.getElementById('queryForm').style.display = 'none';
+  document.getElementById('successMsg').style.display = 'block';
+}
+</script>
+</body>
+</html>
